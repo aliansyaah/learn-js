@@ -35,22 +35,61 @@ class NetworkError extends Error {
 }
     
 // TODO: 1
-const fetchingUserFromInternet = (callback, isOffline) => {
+/* const fetchingUserFromInternet = (callback, isOffline) => {
     setTimeout(() => {
         if (isOffline) {
             callback(new NetworkError('Gagal mendapatkan data dari internet'), null);
         }
         callback(null, { name: 'John', age: 18 });
     }, 500);
+}; */
+
+const user = {
+    name: 'John',
+    age: 18,
+}
+const fetchingUserFromInternet = (isOffline) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            if (isOffline) {
+                // reject("Gagal mendapatkan data dari internet");
+                reject(new NetworkError('Gagal mendapatkan data dari internet'), null);
+                // reject(new NetworkError('NetworkError'), null);
+            } else {
+                // resolve("Berhasil mendapatkan data user");
+                resolve(user);
+            }
+        },500);
+    });
 };
     
     
 // TODO: 2
-const gettingUserName = () => {
+/* const gettingUserName = () => {
     fetchingUserFromInternet((error, user) => {
         if (error) {
+            console.log(error.message);
             return error.message;
         }
+            console.log(user.name);
             return user.name;
     }, false);
-};  
+}; */
+
+
+async function gettingUserName() {
+    try {
+        const resultUser = await fetchingUserFromInternet(false);
+        console.log(resultUser);
+        console.log(resultUser.name);
+        return resultUser.name;
+        
+    } catch (rejectedReason) {
+        console.log(rejectedReason);
+        console.log(rejectedReason.name);
+        console.log(rejectedReason.message);
+        return rejectedReason.message;
+    }
+}
+
+gettingUserName();
