@@ -39,5 +39,5 @@ console.log("Contact: "+mail1.contacts);
 /* 
     Dari contoh di atas, bagaimana jika kita ingin mengubah attribute contacts AGAR tidak dapat diakses langsung oleh objek yang telah meng-instansiasi?
     Kita perlu mengubah sedikit pada kode class Mail yang kita miliki.
-    Lihat pada file propertyMethod3.js
+    Lihat pada file classProperty3.js
 */
