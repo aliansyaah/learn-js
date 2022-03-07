@@ -26,4 +26,13 @@ Urutan:
   - classMethod
   - classStaticMethod
   - classConstructor
+  - encapsulation
+    - encapsulation
+    - abstraction
+  - inheritance
+    - inheritance
+    - polymorphism
+  - overriding constructor
+  - overriding method
+
 4. functionalProgramming
