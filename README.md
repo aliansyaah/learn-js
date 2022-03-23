@@ -32,7 +32,14 @@ Urutan:
   - inheritance
     - inheritance
     - polymorphism
-  - overriding constructor
-  - overriding method
+  - overridingConstructor
+  - overridingMethod
+  - objectComposition
+  - builtinClass
+  - kuisOOP
 
 4. functionalProgramming
+- paradigmaFP
+- pureFunction
+- immutability
+- rekursif
