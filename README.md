@@ -43,3 +43,6 @@ Urutan:
 - pureFunction
 - immutability
 - rekursif
+- 
+- arrayMap
+- arrayFilter
