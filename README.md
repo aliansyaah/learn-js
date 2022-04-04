@@ -67,3 +67,9 @@ Urutan:
 	- es6Module1
 	- es6Module2
 	- kuisModule
+
+7. errorHandling
+	- tryCatch
+	- throwingErrors
+	- customError
+	- kuisErrorHandling
