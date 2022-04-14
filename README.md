@@ -73,3 +73,11 @@ Urutan:
 	- throwingErrors
 	- customError
 	- kuisErrorHandling
+
+8. concurrency
+	- setTimeout
+	- callbackFunction
+	- callbackHell
+	- constructingPromise
+	- consumingPromise
+	- 
