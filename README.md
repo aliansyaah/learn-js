@@ -77,7 +77,9 @@ Urutan:
 8. concurrency
 	- setTimeout
 	- callbackFunction
-	- callbackHell
-	- constructingPromise
-	- consumingPromise
-	- 
+	- callbackHell (code tidak dapat dieksekusi)
+	- promise (code tidak dapat dieksekusi)
+	- constructingPromiseObject
+	- consumingPromises
+	- onRejectedWithCatch
+	- chainingPromises
