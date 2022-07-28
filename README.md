@@ -83,3 +83,14 @@ Urutan:
 	- consumingPromises
 	- onRejectedWithCatch
 	- chainingPromises
+	- promiseAll
+	- async-await
+	- async-await2
+	- async-await3
+	- kuisConcurrency
+
+9. npm
+	- play-with-npm
+
+10. javaScriptTesting
+	- latihan-testing
