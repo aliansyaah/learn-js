@@ -1,3 +1,11 @@
+/* 
+    Using Package
+
+    Di dalam dokumentasinya, lodash menyebutkan bahwa mereka menyediakan utilitas untuk membuat JavaScript lebih mudah dengan menghilangkan kerumitan ketika menggunakan array, number, object, string, dll.
+
+    Misalnya, untuk menjumlahkan setiap nilai number di dalam array, lakukan dengan cara seperti berikut.
+*/
+
 import _ from 'lodash';
 
 const myArray = [1, 2, 3, 4];
