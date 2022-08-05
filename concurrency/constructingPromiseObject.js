@@ -1,6 +1,12 @@
 /* 
     Constructing Promise Object
-    Promise merupakan sebuah objek yang digunakan untuk membuat sebuah komputasi (kode) ditangguhkan dan berjalan secara asynchronous. Untuk membuat objek promise, kita gunakan keyword new diikuti dengan constructor dari Promise.
+    Promise merupakan sebuah objek yang digunakan untuk membuat sebuah komputasi (kode) ditangguhkan dan berjalan secara asynchronous. 
+
+    Untuk membuat objek promise, kita gunakan keyword new diikuti dengan constructor dari Promise:
+    const coffee = new Promise();
+
+    Di dalam constructor Promise, kita perlu menetapkan "resolver function" atau bisa disebut "executor function".
+    Fungsi tersebut akan dijalankan secara otomatis ketika constructor Promise dipanggil.
 */
 
 // const coffee = new Promise();
