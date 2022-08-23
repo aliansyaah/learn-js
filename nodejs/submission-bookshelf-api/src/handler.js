@@ -34,7 +34,7 @@ const addBookHandler = (request, h) => {
     }
 
     const newBook = {
-        name, year, author, summary, publisher, pageCount, readPage, reading, id, insertedAt, updatedAt,
+        name, year, author, summary, publisher, pageCount, readPage, finished, reading, id, insertedAt, updatedAt,
     };
 
     books.push(newBook);
@@ -61,8 +61,37 @@ const addBookHandler = (request, h) => {
     return response;
 };
 
+/* const getAllBooksHandler = () => ({
+    status: 'success',
+    data: {
+        books,
+    },
+}); */
+
+const getAllBooksHandler = (request, h) => {
+    const { name, reading, finished } = request.query;
+
+    if (!name && !reading && !finished) {
+        const response = h.response({
+            status: 'success',
+            data: {
+                books: books.map((book) => ({
+                    id: book.id,
+                    name: book.name,
+                    publisher: book.publisher,
+                }))
+            },
+        });
+
+        response.code(200);
+        return response;
+    }
+};
+
 module.exports = {
     addBookHandler,
     getAllBooksHandler,
     getBookByIdHandler,
+    editBookByIdHandler,
+    deleteBookByIdHandler,
 };
