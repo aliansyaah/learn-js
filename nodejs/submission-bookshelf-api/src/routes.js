@@ -3,6 +3,7 @@ const {
     getAllBooksHandler,
     getBookByIdHandler,
     editBookByIdHandler,
+    deleteBookByIdHandler,
 } = require('./handler');
 
 const routes = [
@@ -32,6 +33,13 @@ const routes = [
         method: 'PUT',
         path: '/books/{bookId}',
         handler: editBookByIdHandler,
+    },
+
+    // Hapus
+    {
+        method: 'DELETE',
+        path: '/books/{bookId}',
+        handler: deleteBookByIdHandler,
     },
 ];
 
