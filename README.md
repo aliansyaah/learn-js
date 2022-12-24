@@ -1,5 +1,8 @@
 # learn-js
-Urutan:
+
+====================================
+Belajar Dasar Pemrograman Javascript
+====================================
 1. strukturData
 	- object
 	- array
@@ -96,3 +99,14 @@ Urutan:
 	- latihan-testing
 
 11. ujianAkhir
+
+==============================================
+Belajar Membuat Aplikasi Back-End untuk Pemula
+==============================================
+Folder nodejs:
+
+1. nodejs-basic
+	- basic
+	- processObject
+	- modularization
+	- 
