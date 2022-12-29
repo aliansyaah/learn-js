@@ -1,4 +1,10 @@
 /* 
+    Javascript bukanlah class-based programming languages. Sebelum hadirnya sintaks ES6, di javascript tidak mengenal sintaks "class". Namun di javascript tetap bisa menerapkan "class" dengan menggunakan sintaks "function".
+
+    Semenjak ada sintaks javascript modern (ES6), javascript bisa membuat class dengan sintaks "class". Hal ini membuat penerapan OOP di javascript bisa mirip dengan bahasa pemrograman berbasis class. Ia hadir untuk mempermudah penerapan OOP bagi developer yang memiliki latar belakang class-based language.
+
+    Tetapi ini tidak membuat javascript menjadi class-based language. Faktanya, sintaks class di JavaScript hanyalah syntactic sugar atau cara alternatif dalam mendefinisikan constructor function. Untuk membuktikan hal tersebut, kita bisa mengecek tipe class melalui operator typeof.
+
     Class sendiri dalam paradigma OOP secara teknis merupakan sebuah blueprint dalam mendefinisikan karakteristik dari sebuah objek. Object adalah instance dari sebuah class. 
 
     Di dalam sebuah class, dapat terdiri dari properti dan method. Properti merupakan karakteristik dari class, sedangkan method adalah kapabilitas atau kemampuan yang dimiliki oleh class.
@@ -23,6 +29,7 @@ Mail1a.prototype.sendMessage = function n(msg, to) {
 const mail1a = new Mail1a();
 mail1a.sendMessage('hallo', 'penerima@dicoding.com');
 
+// ========== //
 
 // b. Tanpa pendekatan prototype
 function Mail1b(){
@@ -37,8 +44,11 @@ function Mail1b(){
 const mail1b = new Mail1b();
 mail1b.sendMessage('hallo', 'penerima@dicoding.com');
 
-
-// PERBEDAAN
+/* 
+    ==========
+    PERBEDAAN 
+    ========== 
+*/
 console.log("\nPERBEDAAN");
 
 // Menggunakan prototype
@@ -47,6 +57,8 @@ mail1a1.hasOwnProperty('sendMessage');
 
 console.log("a. Menggunakan pendekatan prototype:");
 console.log(mail1a1.hasOwnProperty('sendMessage'));
+
+// ========== //
  
 // Tanpa prototype
 const mail1b1 = new Mail1b();
@@ -54,6 +66,8 @@ mail1b1.hasOwnProperty('sendMessage');
 
 console.log("\nb. Tanpa pendekatan prototype:");
 console.log(mail1b1.hasOwnProperty('sendMessage'));
+
+// ========== //
 
 /* 
     Ketika kita meng-instantiate objek-objek lain, objek yang menggunakan prototype tidak meng-copy atribut sendMessage ke setiap objek-objek. 
