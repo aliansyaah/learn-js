@@ -110,3 +110,11 @@ Folder nodejs:
 	- processObject
 	- modularization
 	- 
+
+=====================================
+Belajar Fundamental Aplikasi Back-End
+=====================================
+Folder fundamental-app-be:
+
+1. hapi-plugin-data-validation
+	- mendaftarkan-plugin
