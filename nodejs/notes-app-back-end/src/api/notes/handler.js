@@ -5,10 +5,11 @@
 class NotesHandler {
     /* Parameter service nantinya akan diberikan nilai instance dari NotesService. Dengan begitu, NotesHandler memiliki akses untuk mengelola resource notes melalui properti this._service. */
 
-    constructor(service) {
+    constructor(service, validator) {
 
         /* Buat properti "_service" dan inisialisasikan nilainya dengan service dari parameter constructor. Penggunaan nama variabel diawali underscore (_) dipertimbangkan sebagai lingkup privat secara konvensi */
         this._service = service;
+        this._validator = validator;
 
         this.postNoteHandler = this.postNoteHandler.bind(this);
         this.getNotesHandler = this.getNotesHandler.bind(this);
@@ -19,6 +20,7 @@ class NotesHandler {
 
     postNoteHandler(request, h) {
         try {
+            this._validator.validateNotePayloard(request.payload);
             const { title = 'untitled', body, tags } = request.payload;
 
             // Untuk proses memasukan catatan baru, kita cukup panggil fungsi this._service.addNote kemudian berikan title, body, dan tags sebagai parameter objek note.
@@ -81,6 +83,7 @@ class NotesHandler {
 
     putNoteByIdHandler(request, h) {
         try {
+            this._validator.validateNotePayloard(request.payload);
             const { id } = request.params;
 
             // Panggil fungsi editNoteById, masukkan id sbg parameter pertama & request.payload yang akan menyediakan title, body, dan tags untuk objek note baru

@@ -14,9 +14,9 @@ module.exports = {
     version: '1.0.0',
 
     // Parameter fungsi ini adalah server dan objek options yang menampung service
-    register: async (server, { service }) => {
+    register: async (server, { service, validator }) => {
         // Membuat instance dari class NotesHandler dengan nama notesHandler
-        const notesHandler = new NotesHandler(service);
+        const notesHandler = new NotesHandler(service, validator);
 
         // Daftarkan routes yang sudah kita buat pada server Hapi
         // Caranya di dalam method server.route, panggil fungsi routes dan berikan notesHandler sebagai nilai handler-nya
