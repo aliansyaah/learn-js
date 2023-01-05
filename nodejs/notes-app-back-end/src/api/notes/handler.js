@@ -2,6 +2,8 @@
     Fungsi handler digunakan untuk menangani permintaan dari client yang datang kemudian memberikan respons dan sebaiknya memang hanya sebatas itu. Maksudnya, fungsi handler harus menghindari proses lain yang bukan bagian dari request handling. Contoh, fungsi handler tidak perlu tahu bagaimana cara resource disimpan, cara mendapatkan resource, dan cara-cara lainnya.
 */
 
+const ClientError = require("../../exception/ClientError");
+
 class NotesHandler {
     /* Parameter service nantinya akan diberikan nilai instance dari NotesService. Dengan begitu, NotesHandler memiliki akses untuk mengelola resource notes melalui properti this._service. */
 
@@ -20,7 +22,7 @@ class NotesHandler {
 
     postNoteHandler(request, h) {
         try {
-            this._validator.validateNotePayloard(request.payload);
+            this._validator.validateNotePayload(request.payload);
             const { title = 'untitled', body, tags } = request.payload;
 
             // Untuk proses memasukan catatan baru, kita cukup panggil fungsi this._service.addNote kemudian berikan title, body, dan tags sebagai parameter objek note.
@@ -40,13 +42,24 @@ class NotesHandler {
             response.code(201);
             return response;
         } catch (error) {
-            /* Ingat! Karena this._service.addNote bisa membangkitkan eror ketika catatan gagal dimasukan, maka kita perlu mengantisipasinya dengan menggunakan try .. catch. Mudahnya, Anda bisa membungkus seluruh logic di dalam block try, kemudian untuk block catch, kita kembalikan fungsi handler dengan respons gagal yang memiliki status code 400 dan pesan yang dibawa parameter error. */
-            
+            if (error instanceof ClientError) {
+                /* Ingat! Karena this._service.addNote bisa membangkitkan eror ketika catatan gagal dimasukan, maka kita perlu mengantisipasinya dengan menggunakan try .. catch. Mudahnya, Anda bisa membungkus seluruh logic di dalam block try, kemudian untuk block catch, kita kembalikan fungsi handler dengan respons gagal yang memiliki status code 400 dan pesan yang dibawa parameter error. */
+
+                const response = h.response({
+                    status: 'fail',
+                    message: error.message,
+                });
+                response.code(error.statusCode);
+                return response;
+            }
+
+            // Server ERROR!
             const response = h.response({
-                status: 'fail',
-                message: error.message,
+                status: 'error',
+                message: 'Maaf, terjadi kegagalan pada server kami.',
             });
-            response.code(400);
+            response.code(500);
+            console.error(error);
             return response;
         }
     }
@@ -72,18 +85,29 @@ class NotesHandler {
                 },
             };
         } catch (error) {
+            if (error instanceof ClientError) {
+                const response = h.response({
+                    status: 'fail',
+                    message: error.message,
+                });
+                response.code(error.statusCode);
+                return response;
+            }
+
+            // Server ERROR!
             const response = h.response({
-                status: 'fail',
-                message: error.message,
+                status: 'error',
+                message: 'Maaf, terjadi kegagalan pada server kami.',
             });
-            response.code(404);
+            response.code(500);
+            console.error(error);
             return response;
         }
     }
 
     putNoteByIdHandler(request, h) {
         try {
-            this._validator.validateNotePayloard(request.payload);
+            this._validator.validateNotePayload(request.payload);
             const { id } = request.params;
 
             // Panggil fungsi editNoteById, masukkan id sbg parameter pertama & request.payload yang akan menyediakan title, body, dan tags untuk objek note baru
@@ -94,15 +118,26 @@ class NotesHandler {
                 message: 'Catatan berhasil diperbarui',
             };
         } catch (error) {
+            if (error instanceof ClientError) {
+                const response = h.response({
+                    status: 'fail',
+                    message: error.message,
+                });
+                response.code(error.statusCode);
+                return response;
+            }
+
+            // Server ERROR!
             const response = h.response({
-                status: 'fail',
-                message: error.message,
+                status: 'error',
+                message: 'Maaf, terjadi kegagalan pada server kami.',
             });
-            response.code(404);
+            response.code(500);
+            console.error(error);
             return response;
         }
     }
-
+    
     deleteNoteByIdHandler(request, h) {
         try {
             const { id } = request.params;
@@ -121,6 +156,7 @@ class NotesHandler {
             return response;
         }
     }
+
 }
 
 // Jangan lupa untuk ekspor class NotesHandler agar dapat digunakan pada berkas JavaScript lain

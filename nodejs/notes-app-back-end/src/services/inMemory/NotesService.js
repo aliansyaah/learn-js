@@ -3,6 +3,8 @@
 */
 
 const { nanoid } = require('nanoid');
+const InvariantError = require('../../exception/InvariantError');
+const NotFoundError = require('../../exception/NotFoundError');
 
 class NotesService {
     constructor() {
@@ -25,7 +27,7 @@ class NotesService {
 
         // Lakukan pengecekan pada variabel isSuccess
         if (!isSuccess) {
-            throw new Error('Catatan gagal ditambahkan');
+            throw new InvariantError('Catatan gagal ditambahkan');
         }
 
         // Jika isSuccess bernilai true, kembalikan fungsi dengan nilai id catatan baru
@@ -42,7 +44,7 @@ class NotesService {
 
         /* Lakukan pengecekan pada variabel note. Bila note tidak ditemukan, maka bangkitkan Error. Selain itu, kembalikan fungsi dengan nilai note. */
         if (!note) {
-            throw new Error('Catatan tidak ditemukan');
+            throw new NotFoundError('Catatan tidak ditemukan');
         }
         return note;
     }
@@ -52,7 +54,7 @@ class NotesService {
         const index = this._notes.findIndex((note) => note.id === id);
 
         if (index === -1) {
-            throw new Error('Gagal memperbarui catatan. Id tidak ditemukan');
+            throw new NotFoundError('Gagal memperbarui catatan. Id tidak ditemukan');
         }
 
         const updatedAt = new Date().toISOString();
@@ -70,7 +72,7 @@ class NotesService {
         const index = this._notes.findIndex((note) => note.id === id);
 
         if (index === -1) {
-            throw new Error('Catatan gagal dihapus. Id tidak ditemukan');
+            throw new NotFoundError('Catatan gagal dihapus. Id tidak ditemukan');
         }
         this._notes.splice(index, 1);
     }
