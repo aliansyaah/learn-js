@@ -1,1 +1,3 @@
 node_modules
+nodejs/notes-app-back-end/.env
+nodejs/notes-app-back-end/.prod.env
