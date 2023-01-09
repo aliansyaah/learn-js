@@ -5,7 +5,8 @@ const Hapi = require('@hapi/hapi');
 // const routes = require('./routes');
 
 const notes = require('./api/notes');
-const NotesService = require('./services/inMemory/NotesService');
+// const NotesService = require('./services/inMemory/NotesService');
+const NotesService = require('./services/postgres/NotesService');
 const NotesValidator = require('./validator/notes');
 
 const init = async () => {

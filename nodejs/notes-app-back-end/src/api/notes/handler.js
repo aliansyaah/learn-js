@@ -2,7 +2,7 @@
     Fungsi handler digunakan untuk menangani permintaan dari client yang datang kemudian memberikan respons dan sebaiknya memang hanya sebatas itu. Maksudnya, fungsi handler harus menghindari proses lain yang bukan bagian dari request handling. Contoh, fungsi handler tidak perlu tahu bagaimana cara resource disimpan, cara mendapatkan resource, dan cara-cara lainnya.
 */
 
-const ClientError = require("../../exception/ClientError");
+const ClientError = require("../../exceptions/ClientError");
 
 class NotesHandler {
     /* Parameter service nantinya akan diberikan nilai instance dari NotesService. Dengan begitu, NotesHandler memiliki akses untuk mengelola resource notes melalui properti this._service. */
@@ -20,7 +20,11 @@ class NotesHandler {
         this.deleteNoteByIdHandler = this.deleteNoteByIdHandler.bind(this);
     }
 
-    postNoteHandler(request, h) {
+    /* 
+        Karena operasi CRUD dari NotesService skrg berjalan secara asynchronous, maka perlu sedikit ada perubahan di maana fungsi handler juga perlu menerapkan asynchronous.
+        Tambahkan keyword "async" pada seluruh fungsi handler & tambahkan keyword "await" di setiap penggunaan fungsi dari service 
+    */
+    async postNoteHandler(request, h) {
         try {
             this._validator.validateNotePayload(request.payload);
             const { title = 'untitled', body, tags } = request.payload;
@@ -28,7 +32,7 @@ class NotesHandler {
             // Untuk proses memasukan catatan baru, kita cukup panggil fungsi this._service.addNote kemudian berikan title, body, dan tags sebagai parameter objek note.
 
             // Karena fungsi this._service.addNote akan mengembalikan id catatan yang disimpan, maka buatlah variabel noteId untuk menampung nilainya. Ini karena nilai tersebut akan kita gunakan dalam merespons permintaan.
-            const noteId = this._service.addNote({ title, body, tags });
+            const noteId = await this._service.addNote({ title, body, tags });
 
             // Kita kembalikan fungsi handler dengan respons yang memiliki kode 201.
             // Tambahkan parameter "h" di fungsi handler dan manfaatkanlah untuk membuat respons seperti pada kode lama (agar tidak mengganggu testing di Postman).
@@ -64,8 +68,8 @@ class NotesHandler {
         }
     }
 
-    getNotesHandler() {
-        const notes = this._service.getNotes();
+    async getNotesHandler() {
+        const notes = await this._service.getNotes();
         return {
             status: 'success',
             data: {
@@ -74,10 +78,10 @@ class NotesHandler {
         };
     }
 
-    getNoteByIdHandler(request, h) {
+    async getNoteByIdHandler(request, h) {
         try {
             const { id } = request.params;
-            const note = this._service.getNoteById(id);
+            const note = await this._service.getNoteById(id);
             return {
                 status: 'success',
                 data: {
@@ -105,13 +109,13 @@ class NotesHandler {
         }
     }
 
-    putNoteByIdHandler(request, h) {
+    async putNoteByIdHandler(request, h) {
         try {
             this._validator.validateNotePayload(request.payload);
             const { id } = request.params;
 
             // Panggil fungsi editNoteById, masukkan id sbg parameter pertama & request.payload yang akan menyediakan title, body, dan tags untuk objek note baru
-            this._service.editNoteById(id, request.payload);
+            await this._service.editNoteById(id, request.payload);
 
             return {
                 status: 'success',
@@ -138,10 +142,10 @@ class NotesHandler {
         }
     }
     
-    deleteNoteByIdHandler(request, h) {
+    async deleteNoteByIdHandler(request, h) {
         try {
             const { id } = request.params;
-            this._service.deleteNoteById(id);
+            await this._service.deleteNoteById(id);
             return {
                 status: 'success',
                 message: 'Catatan berhasil dihapus',
