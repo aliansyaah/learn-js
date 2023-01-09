@@ -13,6 +13,10 @@
     "rules": {
         "no-console": "off",
         "linebreak-style": 0,
-        "indent": "off"
+        "indent": "off",
+        "comma-dangle": "off",
+        // "comma-dangle": [2, "always-multiline"],
+        "code": 200     // max length code in one line
+        // "code": false
     }
 }
