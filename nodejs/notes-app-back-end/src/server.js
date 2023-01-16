@@ -4,13 +4,20 @@ require('dotenv').config();
 const Hapi = require('@hapi/hapi');
 // const routes = require('./routes');
 
+// Notes
 const notes = require('./api/notes');
 // const NotesService = require('./services/inMemory/NotesService');
 const NotesService = require('./services/postgres/NotesService');
 const NotesValidator = require('./validator/notes');
 
+// Users
+const users = require('./api/users');
+const UsersService = require('./services/postgres/UsersService');
+const UsersValidator = require('./validator/users');
+
 const init = async () => {
     const notesService = new NotesService();
+    const usersService = new UsersService();
 
     const server = Hapi.server({
         // port: 5000,
@@ -27,13 +34,23 @@ const init = async () => {
     // server.route(routes);
 
     // Daftarkan plugin notes dengan options.service bernilai notesService menggunakan perintah await server.register tepat sebelum kode await server.start().
-    await server.register({
-        plugin: notes,
-        options: {
-            service: notesService,
-            validator: NotesValidator,
-        }
-    });
+    // Ubah cara registrasi plugin notes dari objek literals menjadi arrays. Tujuannya, agar kita dapat mendaftarkan lebih dari satu plugin sekaligus.
+    await server.register([
+        {
+            plugin: notes,
+            options: {
+                service: notesService,
+                validator: NotesValidator,
+            }
+        },
+        {
+            plugin: users,
+            options: {
+                service: usersService,
+                validator: UsersValidator,
+            },
+        },
+    ]);
 
     await server.start();
     console.log(`Server berjalan pada ${server.info.uri}`);

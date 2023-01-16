@@ -2,6 +2,7 @@ const { Pool } = require('pg');
 const InvariantError = require('../../exceptions/InvariantError');
 const { nanoid } = require('nanoid');
 const bcrypt = require('bcrypt');
+const NotFoundError = require('../../exceptions/NotFoundError');
 
 class UsersService {
     constructor() {
@@ -58,6 +59,24 @@ class UsersService {
             */
             throw new InvariantError('Gagal menambahkan user. Username sudah digunakan.')
         }
+    }
+
+    async getUserById(userId) {
+        const query = {
+            text: 'SELECT id, username, fullname FROM users WHERE id = $1',
+            values: [userId],
+        };
+
+        const result = await this._pool.query(query);
+
+        /* 
+            Kemudian evaluasi nilai result.rows.length. Bila nilainya 0, itu berarti user dengan id yang diminta tidak ditemukan. Bila ini terjadi, throw new NotFoundError dengan pesan ‘User tidak ditemukan’ (sesuai dengan skenario uji Getting User by Incorrect Id)
+        */
+        if (!result.rows.length) {
+            throw new NotFoundError('User tidak ditemukan');
+        }
+
+        return result.rows[0];
     }
 }
 
