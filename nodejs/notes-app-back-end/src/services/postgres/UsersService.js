@@ -3,6 +3,7 @@ const InvariantError = require('../../exceptions/InvariantError');
 const { nanoid } = require('nanoid');
 const bcrypt = require('bcrypt');
 const NotFoundError = require('../../exceptions/NotFoundError');
+const AuthenticationError = require('../../exceptions/AuthenticationError');
 
 class UsersService {
     constructor() {
@@ -77,6 +78,35 @@ class UsersService {
         }
 
         return result.rows[0];
+    }
+
+    async verifyUserCredential(username, password) {
+        const query = {
+            text: 'SELECT id, password FROM users WHERE username = $1',
+            values: [username],
+        };
+        const result = await this._pool.query(query);
+
+        if (!result.rows.length) {
+            throw new AuthenticationError('Kredensial yang Anda berikan salah');
+        }
+
+        /* Dapatkan id dan password dari result.rows[0]. Untuk nilai password, kita tampung ke variabel hashedPassword ya biar tidak ambigu dengan variabel password di parameter */
+        const { id, password: hashedPassword } = result.rows[0];
+
+        /* 
+            Komparasi nilai hashedPassword dengan password yang ada di parameter. Karena hashedPassword nilainya sudah di-hash, kita perlu bantuan bcrypt untuk komparasinya
+
+            Untuk melakukan komparasi nilai string plain dan hashed menggunakan bcrypt, kita dapat memanfaatkan fungsi bcrypt.compare. Fungsi tersebut akan mengembalikan Promise boolean yang akan bernilai true bila nilai komparasi sesuai dan false bila nilai komparasi tidak sesuai.
+        */
+        const match = await bcrypt.compare(password, hashedPassword);
+
+        if (!match) {
+            throw new AuthenticationError('Kredensial yang Anda berikan salah');
+        }
+
+        // Nilai user id nantinya akan digunakan dalam membuat access token dan refresh token
+        return id;
     }
 }
 
