@@ -3,6 +3,7 @@ require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
 // const routes = require('./routes');
+const Jwt = require('@hapi/jwt');
 
 // Notes
 const notes = require('./api/notes');
@@ -39,6 +40,32 @@ const init = async () => {
     });
 
     // server.route(routes);
+
+    // registrasi plugin eksternal
+    // registrasikan Jwt sebagai plugin
+    await server.register([
+        {
+            plugin: Jwt,
+        },
+    ]);
+
+    /* Setelah plugin Jwt didaftarkan, kini Hapi plugin sudah mengenal schema dengan nama ‘jwt’. Selanjutnya, kita tinggal buat strategies yang mengimplementasikan schema ‘jwt’ tersebut. */
+    // mendefinisikan strategy autentikasi jwt
+    server.auth.strategy('notesapp_jwt', 'jwt', {
+        keys: process.env.ACCESS_TOKEN_KEY,
+        verify: {
+            aud: false,
+            iss: false,
+            sub: false,
+            maxAgeSec: process.env.ACCESS_TOKEN_AGE,
+        },
+        validate: (artifacts) => ({
+            isValid: true,
+            credentials: {
+                id: artifacts.decoded.payload.id,
+            },
+        }),
+    });
 
     // Daftarkan plugin notes dengan options.service bernilai notesService menggunakan perintah await server.register tepat sebelum kode await server.start().
     // Ubah cara registrasi plugin notes dari objek literals menjadi arrays. Tujuannya, agar kita dapat mendaftarkan lebih dari satu plugin sekaligus.
