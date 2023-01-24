@@ -1,4 +1,5 @@
 const { Pool } = require('pg');
+const InvariantError = require('../../exceptions/InvariantError');
 
 /* 
     AuthenticationService ini akan bertanggung jawab dalam menangani pengelolaan data refresh token pada tabel authentications melalui fungsi-fungsi:

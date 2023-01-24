@@ -1,3 +1,5 @@
+const Jwt = require('@hapi/jwt');
+
 const TokenManager = {
 
     /* Parameter payload merupakan objek yang disimpan ke dalam salah satu artifacts JWT. Biasanya objek payload berisi properti yang mengindikasikan identitas pengguna, contohnya user id. */
