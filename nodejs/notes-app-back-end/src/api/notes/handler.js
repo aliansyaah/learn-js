@@ -28,11 +28,16 @@ class NotesHandler {
         try {
             this._validator.validateNotePayload(request.payload);
             const { title = 'untitled', body, tags } = request.payload;
+            const { id: credentialId } = request.auth.credentials;
 
             // Untuk proses memasukan catatan baru, kita cukup panggil fungsi this._service.addNote kemudian berikan title, body, dan tags sebagai parameter objek note.
 
             // Karena fungsi this._service.addNote akan mengembalikan id catatan yang disimpan, maka buatlah variabel noteId untuk menampung nilainya. Ini karena nilai tersebut akan kita gunakan dalam merespons permintaan.
-            const noteId = await this._service.addNote({ title, body, tags });
+
+            // const noteId = await this._service.addNote({ title, body, tags });
+            const noteId = await this._service.addNote({
+                title, body, tags, owner: credentialId,
+            });
 
             // Kita kembalikan fungsi handler dengan respons yang memiliki kode 201.
             // Tambahkan parameter "h" di fungsi handler dan manfaatkanlah untuk membuat respons seperti pada kode lama (agar tidak mengganggu testing di Postman).
@@ -68,8 +73,10 @@ class NotesHandler {
         }
     }
 
-    async getNotesHandler() {
-        const notes = await this._service.getNotes();
+    async getNotesHandler(request) {
+        const { id: credentialId } = request.auth.credentials;
+        // const notes = await this._service.getNotes();
+        const notes = await this._service.getNotes(credentialId);
         return {
             status: 'success',
             data: {
@@ -81,6 +88,9 @@ class NotesHandler {
     async getNoteByIdHandler(request, h) {
         try {
             const { id } = request.params;
+            const { id: credentialId } = request.auth.credentials;
+
+            await this._service.verifyNoteOwner(id, credentialId);
             const note = await this._service.getNoteById(id);
             return {
                 status: 'success',
@@ -113,6 +123,9 @@ class NotesHandler {
         try {
             this._validator.validateNotePayload(request.payload);
             const { id } = request.params;
+            const { id: credentialId } = request.auth.credentials;
+
+            await this._service.verifyNoteOwner(id, credentialId);
 
             // Panggil fungsi editNoteById, masukkan id sbg parameter pertama & request.payload yang akan menyediakan title, body, dan tags untuk objek note baru
             await this._service.editNoteById(id, request.payload);
@@ -141,22 +154,44 @@ class NotesHandler {
             return response;
         }
     }
-    
+
     async deleteNoteByIdHandler(request, h) {
         try {
             const { id } = request.params;
+            const { id: credentialId } = request.auth.credentials;
+
+            await this._service.verifyNoteOwner(id, credentialId);
             await this._service.deleteNoteById(id);
+
             return {
                 status: 'success',
                 message: 'Catatan berhasil dihapus',
             };
         } catch (error) {
             console.log(error);
+            // const response = h.response({
+            //     status: 'fail',
+            //     message: error.message,
+            // });
+            // response.code(404);
+            // return response;
+
+            if (error instanceof ClientError) {
+                const response = h.response({
+                    status: 'fail',
+                    message: error.message,
+                });
+                response.code(error.statusCode);
+                return response;
+            }
+
+            // Server ERROR!
             const response = h.response({
-                status: 'fail',
-                message: error.message,
+                status: 'error',
+                message: 'Maaf, terjadi kegagalan pada server kami.',
             });
-            response.code(404);
+            response.code(500);
+            console.error(error);
             return response;
         }
     }
