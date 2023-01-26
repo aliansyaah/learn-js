@@ -6,8 +6,9 @@ const NotFoundError = require('../../exceptions/NotFoundError');
 const AuthorizationError = require('../../exceptions/AuthorizationError');
 
 class NotesService {
-    constructor() {
+    constructor(collaborationService) {
         this._pool = new Pool();
+        this._collaborationService = collaborationService;
     }
 
     async addNote({ title, body, tags, owner }) {
@@ -95,8 +96,6 @@ class NotesService {
     /* 
         Kita perlu memeriksa apakah catatan dgn id yg diminta adalah hak pengguna
         Untuk proses pengecekannya sendiri kita akan dilakukan pada fungsi baru yakni verifyNoteOwner. Fungsi tersebut nantinya akan digunakan pada NotesHandler sebelum mendapatkan, mengubah, dan menghapus catatan berdasarkan id.
-
-
     */
     async verifyNoteOwner(id, owner) {
         const query = {
@@ -108,10 +107,25 @@ class NotesService {
         if (!result.rows.length) {
             throw new NotFoundError('Catatan tidak ditemukan');
         }
-        
+
         const note = result.rows[0];
         if (note.owner !== owner) {
             throw new AuthorizationError('Anda tidak berhak mengakses resource ini');
+        }
+    }
+
+    async verifyNoteAccess(noteId, userId) {
+        try {
+            await this.verifyNoteOwner(noteId, userId);
+        } catch (error) {
+            if (error instanceof NotFoundError) {
+                throw error;
+            }
+            try {
+                await this._collaborationService.verifyCollaborator(noteId, userId);
+            } catch {
+                throw error;
+            }
         }
     }
 }
